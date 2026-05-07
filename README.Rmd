@@ -24,9 +24,14 @@ The goal of ecTools is to provide tools for ecosystem accounting and assessments
 
 ## Installation
 
-You can install the development version of eaTools from [GitHub](https://github.com/) with:
+You can install the development version of ecTools from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("NINAnor/ecTools")
 ```
+## ecVerse
+
+ecTools is part of **ecVerse - Ecosystem condition workflows for science and policy**
+
+![](man/figures/logo.png){width=139 height=139} [![](man/figures/ecRxiv_hex.png){width=139 height=139}](https://ecRxiv.com)
