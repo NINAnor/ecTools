@@ -1,0 +1,29 @@
+---
+title: "Normalise condition variable"
+format: 
+  html:
+    toc: true
+pkgdown:
+  as_is: true
+vignette: >
+  %\VignetteIndexEntry{Vignette's Title}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ecTools)
+```
+
+# Introduction
+
+This article explains the use the `ec_normalise()`. Use this function to _normalise_ (also called _rescale_) condition variables based on defined reference levels (also called reference values).
+
+_coming soon_
