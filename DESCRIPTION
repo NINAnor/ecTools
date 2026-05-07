@@ -1,10 +1,10 @@
-Package: eaTools
-Title: Tools for Ecosystem Accounting
+Package: ecTools
+Title: Tools for Ecosystem Condition Accounting and Assessments
 Version: 0.0.0.9000
 Authors@R: 
     person("Anders", "Kolstad", , "anders.kolstad@nina.no", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-9623-9491"))
-Description: This package contains functions to process mainly spatial data and produce output for an ecosystem account. The main focus is on Ecosystem Condition Accounts - scaling and agrgegating indicators.
+Description: This package contains functions to process (mainly spatial) data and produce output for an ecosystem account or assessment. The main focus is on Ecosystem Condition Accounts - scaling and agrgegating indicators.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
