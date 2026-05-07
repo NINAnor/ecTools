@@ -10,7 +10,7 @@ ec_norm_plot(variable, indicator, lan = "english")
 \item{variable}{Numeric vector of raw variable values.}
 
 \item{indicator}{Numeric vector of normalised indicator values, typically
-produced by \code{\link[=ec_normalise_dev]{ec_normalise_dev()}}.}
+produced by \code{ec_normalise_dev()}.}
 
 \item{lan}{Character. Plot language. One of \code{"english"} or \code{"norsk"}.
 Defaults to \code{"english"}.}
@@ -23,7 +23,7 @@ Plot normalised ecological indicator values against the raw variable values
 }
 \details{
 Creates a scatter plot comparing raw variable values and corresponding
-normalised indicator values produced by \code{\link[=ec_normalise_dev]{ec_normalise_dev()}}.
+normalised indicator values produced by \code{ec_normalise_dev()}.
 
 The plot is intended as a simple diagnostic and visualisation tool for
 evaluating ecological normalisation functions.
@@ -35,29 +35,31 @@ The function returns a \code{ggplot2} object and can therefore be further modifi
 using standard \code{ggplot2} syntax.
 }
 \examples{
-x <- c(0, 2, 4, 6, 8, 10)
+x <- seq(0, 1000, by = 2)
 
-ind <- ec_normalise_dev(
+ind <- ec_normalise(
   variable = x,
-  x0 = 0,
-  x100 = 10
+  x0 = 100,
+  x100 = 900,
+  x60 = 200
+)
+
+ec_norm_plot(
+  variable = x,
+  indicator = ind,
+  lan = "norsk"
+)
+
+ind <- ec_normalise(
+  variable = x,
+  x0 = 50,
+  x100 = rnorm(n = length(x), 400, 50),
+  x0h = 900,
+  fun = "sigmoid"
 )
 
 ec_norm_plot(
   variable = x,
   indicator = ind
-)
-
-ind_pw <- ec_normalise_dev(
-  variable = x,
-  x0 = 0,
-  x60 = 5,
-  x100 = 10
-)
-
-ec_norm_plot(
-  variable = x,
-  indicator = ind_pw,
-  lan = "norsk"
 )
 }
