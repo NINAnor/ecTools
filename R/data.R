@@ -8,7 +8,7 @@
 
 #' ex_polygons
 #'
-#'  Example polygon data for eaTools. ex_polygons is a sf object with a dummy condition variable (un-scaled). It does not cover the entire accounting area.
+#'  Example polygon data for ecTools. ex_polygons is a sf object with a dummy condition variable (un-scaled). It does not cover the entire accounting area.
 #'
 #' @format An sf object
 #' \describe{
@@ -20,8 +20,6 @@
 #' \item{condition_variable_3}{A number with value 0 or 1}
 #' }
 "ex_polygons"
-
-
 
 
 #' accounting_area

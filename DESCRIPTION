@@ -1,6 +1,6 @@
 Package: ecTools
 Title: Tools for Ecosystem Condition Accounting and Assessments
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Authors@R: 
     person("Anders", "Kolstad", , "anders.kolstad@nina.no", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-9623-9491"))
@@ -9,7 +9,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
-URL: https://ninanor.github.io/eaTools/
+URL: https://ninanor.github.io/ecTools/
 Imports: 
     bookdown,
     ggplot2,
@@ -20,7 +20,8 @@ Imports:
     units,
     dplyr,
     stats,
-    boot
+    boot,
+    tibble
 Depends: 
     R (>= 2.10)
 LazyData: true
@@ -28,5 +29,6 @@ Suggests:
     knitr,
     rmarkdown,
     tmap,
-    textclean
-VignetteBuilder: knitr
+    textclean,
+    quarto
+VignetteBuilder: quarto
