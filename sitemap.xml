@@ -1,48 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://ninanor.github.io/eaTools/404.html</loc>
-  </url>
-  <url>
-    <loc>https://ninanor.github.io/eaTools/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://ninanor.github.io/eaTools/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://ninanor.github.io/eaTools/articles/aggregate-indicators-to-regions.html</loc>
-  </url>
-  <url>
-    <loc>https://ninanor.github.io/eaTools/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://ninanor.github.io/eaTools/articles/normalise-condition-variable.html</loc>
-  </url>
-  <url>
-    <loc>https://ninanor.github.io/eaTools/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://ninanor.github.io/eaTools/index.html</loc>
-  </url>
-  <url>
-    <loc>https://ninanor.github.io/eaTools/reference/accounting_area.html</loc>
-  </url>
-  <url>
-    <loc>https://ninanor.github.io/eaTools/reference/ea_homogeneous_area.html</loc>
-  </url>
-  <url>
-    <loc>https://ninanor.github.io/eaTools/reference/ea_normalise.html</loc>
-  </url>
-  <url>
-    <loc>https://ninanor.github.io/eaTools/reference/ea_spread.html</loc>
-  </url>
-  <url>
-    <loc>https://ninanor.github.io/eaTools/reference/ex_polygons.html</loc>
-  </url>
-  <url>
-    <loc>https://ninanor.github.io/eaTools/reference/ex_raster.html</loc>
-  </url>
-  <url>
-    <loc>https://ninanor.github.io/eaTools/reference/index.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://ninanor.github.io/ecTools/404.html</loc></url>
+<url><loc>https://ninanor.github.io/ecTools/LICENSE-text.html</loc></url>
+<url><loc>https://ninanor.github.io/ecTools/LICENSE.html</loc></url>
+<url><loc>https://ninanor.github.io/ecTools/articles/index.html</loc></url>
+<url><loc>https://ninanor.github.io/ecTools/articles/normalise-condition-variable.html</loc></url>
+<url><loc>https://ninanor.github.io/ecTools/authors.html</loc></url>
+<url><loc>https://ninanor.github.io/ecTools/index.html</loc></url>
+<url><loc>https://ninanor.github.io/ecTools/reference/accounting_area.html</loc></url>
+<url><loc>https://ninanor.github.io/ecTools/reference/ec_norm_plot.html</loc></url>
+<url><loc>https://ninanor.github.io/ecTools/reference/ec_normalise.html</loc></url>
+<url><loc>https://ninanor.github.io/ecTools/reference/ex_polygons.html</loc></url>
+<url><loc>https://ninanor.github.io/ecTools/reference/ex_raster.html</loc></url>
+<url><loc>https://ninanor.github.io/ecTools/reference/index.html</loc></url>
 </urlset>
+

@@ -1,11 +1,9 @@
-pandoc: 2.19.2
-pkgdown: 2.0.7
+pandoc: 3.8.3
+pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
-  aggregate-indicators-to-regions: aggregate-indicators-to-regions.html
-  normalise-condition-variable: normalise-condition-variable.html
-last_built: 2023-03-15T14:20Z
+  articles/normalise-condition-variable: normalise-condition-variable.html
+last_built: 2026-05-08T08:12Z
 urls:
-  reference: https://ninanor.github.io/eaTools/reference
-  article: https://ninanor.github.io/eaTools/articles
-
+  reference: https://ninanor.github.io/ecTools/reference
+  article: https://ninanor.github.io/ecTools/articles

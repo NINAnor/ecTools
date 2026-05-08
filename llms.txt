@@ -1,0 +1,41 @@
+# ecTools
+
+The goal of ecTools is to provide tools for creating ecosystem accounts
+and assessment.
+
+## eaTools = ecTools
+
+The package was renames ecTools in may 2026.
+
+## Installation
+
+You can install the development version of eaTools from
+[GitHub](https://github.com/) with:
+
+``` r
+
+# install.packages("devtools")
+devtools::install_github("NINAnor/ecTools")
+```
+
+# Package index
+
+## All functions
+
+- [`accounting_area`](https://ninanor.github.io/ecTools/reference/accounting_area.md)
+  : accounting_area
+- [`ec_norm_plot()`](https://ninanor.github.io/ecTools/reference/ec_norm_plot.md)
+  : ec_norm_plot
+- [`ec_normalise()`](https://ninanor.github.io/ecTools/reference/ec_normalise.md)
+  : ec_normalise
+- [`ex_polygons`](https://ninanor.github.io/ecTools/reference/ex_polygons.md)
+  : ex_polygons
+- [`ex_raster`](https://ninanor.github.io/ecTools/reference/ex_raster.md)
+  : ex_raster
+
+# Articles
+
+### All vignettes
+
+- [Normalise condition
+  variable](https://ninanor.github.io/ecTools/articles/normalise-condition-variable.md):
