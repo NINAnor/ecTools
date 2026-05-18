@@ -86,6 +86,7 @@ output should therefore be interpreted as an inferential uncertainty
 distribution for each coarser spatial unit.
 }
 \examples{
+set.seed(159)
 dat <- data.frame(
   myVariable = c(rnorm(100, .4, .1), rnorm(100, .6, .1)),
   myWeight = rep(c(1, 2), each=100),
@@ -94,7 +95,7 @@ dat <- data.frame(
   year = 2026
   )
 
-ec_upscale(
+out <- ec_upscale(
    data = dat,
    variable = myVariable,
    weight = myWeight,
@@ -103,5 +104,9 @@ ec_upscale(
    year = year,
    n = 10
  )
+out
+
+out |>
+  summarise(mean = (mean(sampled_mean)))
 
 }

@@ -63,6 +63,7 @@
 #' distribution for each coarser spatial unit.
 #'
 #' @examples
+#' set.seed(159)
 #' dat <- data.frame(
 #'   myVariable = c(rnorm(100, .4, .1), rnorm(100, .6, .1)),
 #'   myWeight = rep(c(1, 2), each=100),
@@ -71,7 +72,7 @@
 #'   year = 2026
 #'   )
 #'
-#' ec_upscale(
+#' out <- ec_upscale(
 #'    data = dat,
 #'    variable = myVariable,
 #'    weight = myWeight,
@@ -80,6 +81,10 @@
 #'    year = year,
 #'    n = 10
 #'  )
+#' out
+#'
+#' out |>
+#'   summarise(mean = (mean(sampled_mean)))
 #'
 #' @importFrom dplyr group_by group_modify slice_sample ungroup summarise rename
 #' @importFrom rlang ensym
