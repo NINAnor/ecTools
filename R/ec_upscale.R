@@ -63,6 +63,8 @@
 #' distribution for each coarser spatial unit.
 #'
 #' @examples
+#' library(dplyr)
+#' library(stats)
 #' set.seed(159)
 #' dat <- data.frame(
 #'   myVariable = c(rnorm(100, .4, .1), rnorm(100, .6, .1)),
@@ -89,6 +91,7 @@
 #' @importFrom dplyr group_by group_modify slice_sample ungroup summarise rename
 #' @importFrom rlang ensym
 #' @importFrom tibble tibble
+#' @importFrom stats weighted.mean
 #'
 #' @export
 

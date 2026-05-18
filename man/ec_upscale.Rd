@@ -86,6 +86,8 @@ output should therefore be interpreted as an inferential uncertainty
 distribution for each coarser spatial unit.
 }
 \examples{
+library(dplyr)
+library(stats)
 set.seed(159)
 dat <- data.frame(
   myVariable = c(rnorm(100, .4, .1), rnorm(100, .6, .1)),
