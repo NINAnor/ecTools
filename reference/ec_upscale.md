@@ -1,6 +1,7 @@
 # ec_upscale
 
-Aggregate ecosystem condition indicators to coarser spatial scales
+Aggregate ecosystem condition indicators, either to coarser spatial
+scales, to to indices.
 
 ## Usage
 
@@ -9,8 +10,8 @@ ec_upscale(
   data,
   variable,
   weight,
-  currentUnits,
-  newUnits,
+  start_units,
+  end_units,
   year = NULL,
   n = 1000
 )
@@ -35,21 +36,22 @@ ec_upscale(
   `newUnits`, for example area, habitat area, or another relevant
   spatial weight.
 
-- currentUnits:
+- start_units:
 
-  Column identifying the finer spatial units from which one value is
-  sampled in each Monte Carlo iteration.
+  Column identifying the units from which one value is sampled in each
+  Monte Carlo iteration. This is typically the current spatial scale, or
+  the name of the indicator.
 
-- newUnits:
+- end_units:
 
-  Column identifying the coarser spatial units to which the ecosystem
-  condition indicator should be aggregated.
+  Column identifying the final units to which the ecosystem condition
+  indicator should be aggregated.
 
 - year:
 
   Optional column identifying years or other temporal groups. If
   supplied, aggregation is performed separately for each combination of
-  `year` and `newUnits`.
+  `year` and `start_units`.
 
 - n:
 
@@ -77,25 +79,28 @@ unit, and optionally each year. The output contains:
 ## Details
 
 `ec_upscale()` propagates inferential uncertainty in ecosystem condition
-indicators from finer spatial units to coarser spatial units using Monte
-Carlo sampling. For each coarse spatial unit, and optionally for each
-year, the function repeatedly samples one value from the distribution of
-each finer spatial unit and computes a weighted mean across those
-sampled values.
+indicators into new probaility distributions for a high order. The
+aggregation is from `start_units` to `end_units`. The function is
+typically used to aggregate indicators from fine to coarser spatial
+scales, or to aggregate different indicators to indices. The function
+uses using Monte Carlo sampling. For each `start_unit` (fine spatial
+scale unit, or indicator), and optionally for each `year`, the function
+repeatedly samples one value from the distribution of each `start_unit`
+and computes a weighted mean across those sampled values.
 
 The input `variable` is assumed to represent a distribution of plausible
 values for the true ecosystem condition indicator value of each
-`currentUnits` unit. The resulting `sampled_mean` values therefore
+`start_unit` unit. The resulting `sampled_mean` values therefore
 represent an inferential uncertainty distribution for the aggregated
-value at the `newUnits` level, rather than a descriptive distribution of
-observed values. Point estimates and summary statistics, such as means,
-medians, credible intervals, or quantiles, should be computed from the
-returned distribution after aggregation.
+value at the `end_units` level, rather than a descriptive distribution
+of observed values. Point estimates and summary statistics, such as
+means, medians, credible intervals, or quantiles, should be computed
+from the returned distribution after aggregation.
 
-For each `newUnits` group, the function performs the following steps `n`
-times:
+For each `start_units` group, the function performs the following steps
+`n` times:
 
-1.  Sample one value from each `currentUnits` group.
+1.  Sample one value from each `start_units` group.
 
 2.  Compute the weighted mean of the sampled values using `weight`.
 
@@ -103,9 +108,9 @@ times:
     uncertainty distribution.
 
 The function is designed for cases where uncertainty is represented as a
-distribution of possible true values for each fine-scale spatial unit.
-The output should therefore be interpreted as an inferential uncertainty
-distribution for each coarser spatial unit.
+distribution of possible true values for each start unit. The output
+should therefore be interpreted as an inferential uncertainty
+distribution for each end unit.
 
 ## Examples
 
@@ -124,8 +129,8 @@ set.seed(159)
 dat <- data.frame(
   myVariable = c(rnorm(100, .4, .1), rnorm(100, .6, .1)),
   myWeight = rep(c(1, 2), each=100),
-  currentUnits = rep(c("A", "B"), each=100),
-  newUnits = "A and B",
+  start_units = rep(c("A", "B"), each=100),
+  end_units = "A and B",
   year = 2026
   )
 
@@ -133,14 +138,14 @@ out <- ec_upscale(
    data = dat,
    variable = myVariable,
    weight = myWeight,
-   currentUnits = currentUnits,
-   newUnits = newUnits,
+   start_units = start_units,
+   end_units = end_units,
    year = year,
    n = 10
  )
 out
 #> # A tibble: 10 × 3
-#>     year area_name sampled_mean
+#>     year end_units sampled_mean
 #>    <dbl> <chr>            <dbl>
 #>  1  2026 A and B          0.383
 #>  2  2026 A and B          0.601
