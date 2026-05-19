@@ -200,9 +200,9 @@ ec_normalise <- function(
 
   norm_pw_lin_dec <- function() {
     ifelse(
-      variable < x60,
-      ((variable - x0) / (x60 - x0)) * 0.6,
-      ((variable - x60) / (x100 - x60)) * (1 - 0.6) + 0.6
+      variable > x60,
+      ((x0 - variable) / (x0 - x60)) * 0.6,
+      ((x60 - variable) / (x60 - x100)) * (1 - 0.6) + 0.6
     )
   }
 
