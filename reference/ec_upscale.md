@@ -13,6 +13,7 @@ ec_upscale(
   start_units,
   end_units,
   year = NULL,
+  end_units_name = "name",
   n = 1000
 )
 ```
@@ -52,6 +53,11 @@ ec_upscale(
   Optional column identifying years or other temporal groups. If
   supplied, aggregation is performed separately for each combination of
   `year` and `start_units`.
+
+- end_units_name:
+
+  Name for the output column containing the names from `end_units`.
+  Defaults to "name".
 
 - n:
 
@@ -145,18 +151,18 @@ out <- ec_upscale(
  )
 out
 #> # A tibble: 10 × 3
-#>     year end_units sampled_mean
-#>    <dbl> <chr>            <dbl>
-#>  1  2026 A and B          0.383
-#>  2  2026 A and B          0.601
-#>  3  2026 A and B          0.557
-#>  4  2026 A and B          0.590
-#>  5  2026 A and B          0.672
-#>  6  2026 A and B          0.519
-#>  7  2026 A and B          0.396
-#>  8  2026 A and B          0.656
-#>  9  2026 A and B          0.614
-#> 10  2026 A and B          0.571
+#>     year name    sampled_mean
+#>    <dbl> <chr>          <dbl>
+#>  1  2026 A and B        0.383
+#>  2  2026 A and B        0.601
+#>  3  2026 A and B        0.557
+#>  4  2026 A and B        0.590
+#>  5  2026 A and B        0.672
+#>  6  2026 A and B        0.519
+#>  7  2026 A and B        0.396
+#>  8  2026 A and B        0.656
+#>  9  2026 A and B        0.614
+#> 10  2026 A and B        0.571
 
 out |>
   summarise(mean = (mean(sampled_mean)))
