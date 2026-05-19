@@ -8,13 +8,13 @@
 ## Citation
 
 Kolstad A (2026). *ecTools: Tools for Ecosystem Condition Accounting and
-Assessments*. R package version 0.0.0.9001,
+Assessments*. R package version 0.0.0.9002,
 <https://ninanor.github.io/ecTools/>.
 
     @Manual{,
       title = {ecTools: Tools for Ecosystem Condition Accounting and Assessments},
       author = {Anders Kolstad},
       year = {2026},
-      note = {R package version 0.0.0.9001},
+      note = {R package version 0.0.0.9002},
       url = {https://ninanor.github.io/ecTools/},
     }
