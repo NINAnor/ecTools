@@ -35,6 +35,8 @@
 #' @param year Optional column identifying years or other temporal groups. If
 #'   supplied, aggregation is performed separately for each combination of
 #'   `year` and `start_units`.
+#' @param end_units_name Name for the output column containing the names from `end_units`.
+#'   Defaults to "name".
 #' @param n Integer. Number of Monte Carlo samples to draw for each aggregated
 #'   unit. Defaults to `1000`.
 #'
@@ -105,6 +107,7 @@ ec_upscale <- function(
   start_units,
   end_units,
   year = NULL,
+  end_units_name = "name",
   n = 1000
 ) {
   variable <- rlang::ensym(variable)
@@ -133,5 +136,5 @@ ec_upscale <- function(
       )
     }) |>
     dplyr::ungroup() |>
-    rename(end_units = !!end_units, sampled_mean = mean)
+    rename(!!end_units_name := end_units, sampled_mean = mean)
 }

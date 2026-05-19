@@ -11,6 +11,7 @@ ec_upscale(
   start_units,
   end_units,
   year = NULL,
+  end_units_name = "name",
   n = 1000
 )
 }
@@ -36,6 +37,9 @@ ecosystem condition indicator should be aggregated.}
 \item{year}{Optional column identifying years or other temporal groups. If
 supplied, aggregation is performed separately for each combination of
 \code{year} and \code{start_units}.}
+
+\item{end_units_name}{Name for the output column containing the names from \code{end_units}.
+Defaults to "name".}
 
 \item{n}{Integer. Number of Monte Carlo samples to draw for each aggregated
 unit. Defaults to \code{1000}.}
