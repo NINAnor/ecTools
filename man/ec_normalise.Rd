@@ -72,8 +72,10 @@ supplied either as single values or as vectors with the same length as
 observations must either have \code{x0 < x100} or all must have \code{x0 > x100}.
 
 By default, values outside the reference range are truncated to the interval
-\verb{[0, 1]}. Set \code{truncation = FALSE} to instead extrapolate the linear mapping beyond the reference range, returning values below 0 or above 1.
-This is only available when \code{fun = "linear"}, because the non-linear transformations would otherwise produce \code{NaN} for negative extrapolated values.
+\verb{[0, 1]}. Set \code{truncation = FALSE} to instead extrapolate the linear mapping
+beyond the reference range, returning values below 0 or above 1. This is only
+available when \code{fun = "linear"}, because the non-linear transformations would
+otherwise produce \code{NaN} for negative extrapolated values.
 
 Two-sided normalisation with defined \code{x60} values is currently not supported.
 Exponential transformations are currently not supported when \code{x60} is used.
