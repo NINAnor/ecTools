@@ -14,7 +14,8 @@ ec_normalise(
   x0h = NULL,
   fun = "linear",
   convex_exponent = 0.5,
-  concave_exponent = 2
+  concave_exponent = 2,
+  truncation = TRUE
 )
 ```
 
@@ -70,6 +71,13 @@ ec_normalise(
   Numeric. Exponent used when `fun = "exponential concave"`. Defaults to
   2.
 
+- truncation:
+
+  Logical. If `TRUE` (the default), normalised values are clamped to the
+  interval `[0, 1]`. If `FALSE`, values outside the reference range are
+  linearly extrapolated and may fall below 0 or above 1. Disabling
+  truncation is only supported when `fun = "linear"`.
+
 ## Value
 
 A numeric vector with values between 0 and 1.
@@ -88,8 +96,12 @@ between `x0` and `x100` must be consistent for all observations; that
 is, all observations must either have `x0 < x100` or all must have
 `x0 > x100`.
 
-Values outside the reference range are truncated to the interval
-`[0, 1]`.
+By default, values outside the reference range are truncated to the
+interval `[0, 1]`. Set `truncation = FALSE` to instead extrapolate the
+linear mapping beyond the reference range, returning values below 0 or
+above 1. This is only available when `fun = "linear"`, because the
+non-linear transformations would otherwise produce `NaN` for negative
+extrapolated values.
 
 Two-sided normalisation with defined `x60` values is currently not
 supported. Exponential transformations are currently not supported when
@@ -136,4 +148,12 @@ ec_normalise(
   x100 = seq(5, 10, length.out = length(x))
 )
 #> [1] 0.0000000 0.3333333 0.5714286 0.7500000 0.8888889 1.0000000
+
+ec_normalise(
+  variable = c(-2, 0, 5, 10, 12),
+  x0 = 0,
+  x100 = 10,
+  truncation = FALSE
+)
+#> [1] -0.2  0.0  0.5  1.0  1.2
 ```
