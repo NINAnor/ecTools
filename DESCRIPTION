@@ -5,8 +5,7 @@ Authors@R: c(
     person("Anders", "Kolstad", , "anders.kolstad@nina.no", role = c("aut", "cre"), 
         comment = c(ORCID = "0000-0002-9623-9491")),
     person("Aud", "Halbritter", , "aud.halbritter@uib.no", role = c("ctb"), 
-        comment = c(ORCID = "0000-0003-2597-6328"))
-)
+        comment = c(ORCID = "0000-0003-2597-6328")))
 Description: This package contains functions to process (mainly spatial) data and produce output for an ecosystem account or assessment. The main focus is on Ecosystem Condition Accounts - scaling and agrgegating indicators.
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -37,3 +36,4 @@ Suggests:
 Config/testthat/edition: 3
 VignetteBuilder: quarto
 Config/roxygen2/version: 8.0.0
+RoxygenNote: 7.2.3
