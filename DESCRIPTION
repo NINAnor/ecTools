@@ -8,7 +8,6 @@ Description: This package contains functions to process (mainly spatial) data an
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
 URL: https://ninanor.github.io/ecTools/
 Imports: 
     bookdown,
@@ -30,5 +29,8 @@ Suggests:
     rmarkdown,
     tmap,
     textclean,
-    quarto
+    quarto,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
 VignetteBuilder: quarto
+Config/roxygen2/version: 8.0.0

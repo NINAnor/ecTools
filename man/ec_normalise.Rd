@@ -13,7 +13,8 @@ ec_normalise(
   x0h = NULL,
   fun = "linear",
   convex_exponent = 0.5,
-  concave_exponent = 2
+  concave_exponent = 2,
+  truncation = TRUE
 )
 }
 \arguments{
@@ -47,6 +48,11 @@ One of \code{"linear"} (no transformation), \code{"sigmoid"}, \code{"exponential
 
 \item{concave_exponent}{Numeric. Exponent used when
 \code{fun = "exponential concave"}. Defaults to 2.}
+
+\item{truncation}{Logical. If \code{TRUE} (the default), normalised values are
+clamped to the interval \verb{[0, 1]}. If \code{FALSE}, values outside the reference
+range are linearly extrapolated and may fall below 0 or above 1. Disabling
+truncation is only supported when \code{fun = "linear"}.}
 }
 \value{
 A numeric vector with values between 0 and 1.
@@ -65,7 +71,11 @@ supplied either as single values or as vectors with the same length as
 \code{x0} and \code{x100} must be consistent for all observations; that is, all
 observations must either have \code{x0 < x100} or all must have \code{x0 > x100}.
 
-Values outside the reference range are truncated to the interval \verb{[0, 1]}.
+By default, values outside the reference range are truncated to the interval
+\verb{[0, 1]}. Set \code{truncation = FALSE} to instead extrapolate the linear mapping
+beyond the reference range, returning values below 0 or above 1. This is only
+available when \code{fun = "linear"}, because the non-linear transformations would
+otherwise produce \code{NaN} for negative extrapolated values.
 
 Two-sided normalisation with defined \code{x60} values is currently not supported.
 Exponential transformations are currently not supported when \code{x60} is used.
@@ -103,5 +113,12 @@ ec_normalise(
   variable = x,
   x0 = rep(0, length(x)),
   x100 = seq(5, 10, length.out = length(x))
+)
+
+ec_normalise(
+  variable = c(-2, 0, 5, 10, 12),
+  x0 = 0,
+  x100 = 10,
+  truncation = FALSE
 )
 }

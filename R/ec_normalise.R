@@ -28,6 +28,10 @@
 #'   `fun = "exponential convex"`. Defaults to 0.5.
 #' @param concave_exponent Numeric. Exponent used when
 #'   `fun = "exponential concave"`. Defaults to 2.
+#' @param truncation Logical. If `TRUE` (the default), normalised values are
+#'   clamped to the interval `[0, 1]`. If `FALSE`, values outside the reference
+#'   range are linearly extrapolated and may fall below 0 or above 1. Disabling
+#'   truncation is only supported when `fun = "linear"`.
 #'
 #' @details
 #' All reference parameters (`x0`, `x60`, `x100`, `x60h`, and `x0h`) may be
@@ -36,7 +40,11 @@
 #' `x0` and `x100` must be consistent for all observations; that is, all
 #' observations must either have `x0 < x100` or all must have `x0 > x100`.
 #'
-#' Values outside the reference range are truncated to the interval `[0, 1]`.
+#' By default, values outside the reference range are truncated to the interval
+#' `[0, 1]`. Set `truncation = FALSE` to instead extrapolate the linear mapping
+#' beyond the reference range, returning values below 0 or above 1. This is only
+#' available when `fun = "linear"`, because the non-linear transformations would
+#' otherwise produce `NaN` for negative extrapolated values.
 #'
 #' Two-sided normalisation with defined `x60` values is currently not supported.
 #' Exponential transformations are currently not supported when `x60` is used.
@@ -80,6 +88,13 @@
 #'   x0 = rep(0, length(x)),
 #'   x100 = seq(5, 10, length.out = length(x))
 #' )
+#'
+#' ec_normalise(
+#'   variable = c(-2, 0, 5, 10, 12),
+#'   x0 = 0,
+#'   x100 = 10,
+#'   truncation = FALSE
+#' )
 ec_normalise <- function(
   variable = NULL,
   x0 = 0,
@@ -89,12 +104,35 @@ ec_normalise <- function(
   x0h = NULL,
   fun = "linear",
   convex_exponent = 0.5,
-  concave_exponent = 2
+  concave_exponent = 2,
+  truncation = TRUE
 ) {
   if (!is_empty(x60) & !is_empty(x0h)) {
     stop(
       "Two-sided normalisation with defined x60 values are not yet supported."
     )
+  }
+
+  if (!isTRUE(truncation) && !isFALSE(truncation)) {
+    stop("`truncation` must be either TRUE or FALSE.")
+  }
+
+  if (!truncation && fun != "linear") {
+    stop(
+      "truncation = FALSE is only supported with fun = \"linear\"."
+    )
+  }
+
+  if (!is.null(variable) && !is.numeric(variable)) {
+    stop("`variable` must be a numeric vector.")
+  }
+
+  ref_values <- list(x0 = x0, x60 = x60, x100 = x100, x60h = x60h, x0h = x0h)
+  for (nm in names(ref_values)) {
+    val <- ref_values[[nm]]
+    if (!is.null(val) && !is.numeric(val)) {
+      stop("`", nm, "` must be numeric.")
+    }
   }
 
   if (
@@ -226,7 +264,9 @@ ec_normalise <- function(
     indicator <- norm_pw_lin_dec()
   }
 
-  indicator <- trunc(indicator)
+  if (truncation) {
+    indicator <- trunc(indicator)
+  }
 
   if (fun == "sigmoid") {
     indicator <- 100.68 * (1 - exp(-5 * indicator^2.5)) / 100
