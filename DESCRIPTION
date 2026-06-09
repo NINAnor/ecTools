@@ -2,8 +2,10 @@ Package: ecTools
 Title: Tools for Ecosystem Condition Accounting and Assessments
 Version: 0.0.0.9002
 Authors@R: 
-    person("Anders", "Kolstad", , "anders.kolstad@nina.no", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0002-9623-9491"))
+    person("Anders", "Kolstad", , "anders.kolstad@nina.no", role = c("aut", "cre"), 
+        comment = c(ORCID = "0000-0002-9623-9491")),
+    person("Aud", "Halbritter", , "aud.halbritter@uib.no", role = c("ctb"), 
+        comment = c(ORCID = "0000-0003-2597-6328"))
 Description: This package contains functions to process (mainly spatial) data and produce output for an ecosystem account or assessment. The main focus is on Ecosystem Condition Accounts - scaling and agrgegating indicators.
 License: MIT + file LICENSE
 Encoding: UTF-8
