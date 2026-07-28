@@ -37,7 +37,8 @@
 #'   ecosystem condition indicator should be aggregated.
 #' @param year Optional column identifying years or other temporal groups. If
 #'   supplied, aggregation is performed separately for each combination of
-#'   `year` and `start_units`.
+#'   `year` and `end_units`. If omitted,
+#'   all observations are pooled before upscaling.
 #' @param end_units_name Name for the output column containing the names from `end_units`.
 #'   Defaults to "name".
 #' @param n Integer. Number of Monte Carlo samples to draw for each aggregated
@@ -121,14 +122,22 @@ ec_upscale <- function(
   weight <- rlang::ensym(weight)
   start_units <- rlang::ensym(start_units)
   end_units <- rlang::ensym(end_units)
-  year <- rlang::ensym(year)
+  
+  year <- rlang::enquo(year)
+  year_missing <- rlang::quo_is_null(year)
+
+  group_vars <- if (year_missing) {
+    rlang::quos(!!end_units)
+  } else {
+    rlang::quos(!!year, !!end_units)
+  }
 
   one_sample <- function(df) {
     sampled <- df |>
       dplyr::group_by(!!start_units) |>
       dplyr::slice_sample(n = 1) |>
       dplyr::ungroup()
-
+    
     values <- dplyr::pull(sampled, !!variable)
     weights <- dplyr::pull(sampled, !!weight)
 
@@ -151,7 +160,7 @@ ec_upscale <- function(
   }
 
   data |>
-    group_by(!!year, !!end_units) |>
+    group_by(!!!group_vars) |>
     dplyr::group_modify(\(df, ...) {
       tibble::tibble(
         value = replicate(n, one_sample(df))

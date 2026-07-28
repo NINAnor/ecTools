@@ -12,7 +12,8 @@ ec_upscale(
   end_units,
   year = NULL,
   end_units_name = "name",
-  n = 1000
+  n = 1000,
+  aggregation = c("weighted_mean", "weighted_sum", "sum")
 )
 }
 \arguments{
@@ -36,13 +37,17 @@ ecosystem condition indicator should be aggregated.}
 
 \item{year}{Optional column identifying years or other temporal groups. If
 supplied, aggregation is performed separately for each combination of
-\code{year} and \code{start_units}.}
+\code{year} and \code{end_units}. If omitted,
+all observations are pooled before upscaling.}
 
 \item{end_units_name}{Name for the output column containing the names from \code{end_units}.
 Defaults to "name".}
 
 \item{n}{Integer. Number of Monte Carlo samples to draw for each aggregated
 unit. Defaults to \code{1000}.}
+
+\item{aggregation}{Character. Type of aggregation method. One of \code{weighted_mean},
+\code{weighted_sum}, and \code{sum}. Defaults to \code{weighted_mean}.}
 }
 \value{
 A tibble with one row per Monte Carlo sample for each aggregated
@@ -51,8 +56,8 @@ spatial unit, and optionally each year. The output contains:
 \item{year}{The year or temporal group, if \code{year} is supplied.}
 \item{area_name}{The name or identifier of the aggregated \code{newUnits}
 spatial unit.}
-\item{sampled_mean}{One Monte Carlo draw from the inferred distribution
-of the weighted mean ecosystem condition indicator for the aggregated
+\item{sampled_value}{One Monte Carlo draw from the inferred distribution
+of the ecosystem condition indicator for the aggregated
 unit.}
 }
 }
@@ -70,21 +75,24 @@ each \code{start_unit} and computes a weighted mean across those sampled values.
 
 The input \code{variable} is assumed to represent a distribution of plausible
 values for the true ecosystem condition indicator value of each
-\code{start_unit} unit. The resulting \code{sampled_mean} values therefore represent
+\code{start_unit} unit. The resulting \code{sampled_value} therefore represent
 an inferential uncertainty distribution for the aggregated value at the
 \code{end_units} level, rather than a descriptive distribution of observed values.
 Point estimates and summary statistics, such as means, medians, credible
 intervals, or quantiles, should be computed from the returned distribution
 after aggregation.
 
+The aggregation, or upscaling, can be done using weighted means,
+weighted sums, or plain sums.
+
 For each \code{start_units} group, the function performs the following steps \code{n}
 times:
 
 \enumerate{
 \item Sample one value from each \code{start_units} group.
-\item Compute the weighted mean of the sampled values using \code{weight}.
-\item Store the resulting weighted mean as one draw from the aggregated
-uncertainty distribution.
+\item Compute the weighted mean or sum of the sampled values using \code{weight}.
+\item Store the resulting value (weighted mean, weighted sum, or sum)
+as one draw from the aggregated uncertainty distribution.
 }
 
 The function is designed for cases where uncertainty is represented as a
@@ -116,6 +124,6 @@ out <- ec_upscale(
 out
 
 out |>
-  summarise(mean = (mean(sampled_mean)))
+  summarise(mean = (mean(sampled_value)))
 
 }
