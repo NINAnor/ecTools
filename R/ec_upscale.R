@@ -12,12 +12,15 @@
 #'
 #' The input `variable` is assumed to represent a distribution of plausible
 #' values for the true ecosystem condition indicator value of each
-#' `start_unit` unit. The resulting `sampled_mean` values therefore represent
+#' `start_unit` unit. The resulting `sampled_value` therefore represent
 #' an inferential uncertainty distribution for the aggregated value at the
 #' `end_units` level, rather than a descriptive distribution of observed values.
 #' Point estimates and summary statistics, such as means, medians, credible
 #' intervals, or quantiles, should be computed from the returned distribution
 #' after aggregation.
+#' 
+#' The aggregation, or upscaling, can be done using weighted means, 
+#' weighted sums, or plain sums.
 #'
 #' @param data A data frame or tibble containing the input distributions and
 #'   spatial grouping variables.
@@ -34,11 +37,14 @@
 #'   ecosystem condition indicator should be aggregated.
 #' @param year Optional column identifying years or other temporal groups. If
 #'   supplied, aggregation is performed separately for each combination of
-#'   `year` and `start_units`.
+#'   `year` and `end_units`. If omitted,
+#'   all observations are pooled before upscaling.
 #' @param end_units_name Name for the output column containing the names from `end_units`.
 #'   Defaults to "name".
 #' @param n Integer. Number of Monte Carlo samples to draw for each aggregated
 #'   unit. Defaults to `1000`.
+#' @param aggregation Character. Type of aggregation method. One of `weighted_mean`,
+#'   `weighted_sum`, and `sum`. Defaults to `weighted_mean`.
 #'
 #' @return A tibble with one row per Monte Carlo sample for each aggregated
 #'   spatial unit, and optionally each year. The output contains:
@@ -46,8 +52,8 @@
 #'     \item{year}{The year or temporal group, if `year` is supplied.}
 #'     \item{area_name}{The name or identifier of the aggregated `newUnits`
 #'       spatial unit.}
-#'     \item{sampled_mean}{One Monte Carlo draw from the inferred distribution
-#'       of the weighted mean ecosystem condition indicator for the aggregated
+#'     \item{sampled_value}{One Monte Carlo draw from the inferred distribution
+#'       of the ecosystem condition indicator for the aggregated
 #'       unit.}
 #'   }
 #'
@@ -57,9 +63,9 @@
 #'
 #' \enumerate{
 #'   \item Sample one value from each `start_units` group.
-#'   \item Compute the weighted mean of the sampled values using `weight`.
-#'   \item Store the resulting weighted mean as one draw from the aggregated
-#'     uncertainty distribution.
+#'   \item Compute the weighted mean or sum of the sampled values using `weight`.
+#'   \item Store the resulting value (weighted mean, weighted sum, or sum) 
+#'     as one draw from the aggregated uncertainty distribution.
 #' }
 #'
 #' The function is designed for cases where uncertainty is represented as a
@@ -91,7 +97,7 @@
 #' out
 #'
 #' out |>
-#'   summarise(mean = (mean(sampled_mean)))
+#'   summarise(mean = (mean(sampled_value)))
 #'
 #' @importFrom dplyr group_by group_modify slice_sample ungroup summarise rename
 #' @importFrom rlang ensym
@@ -108,33 +114,58 @@ ec_upscale <- function(
   end_units,
   year = NULL,
   end_units_name = "name",
-  n = 1000
+  n = 1000,
+  aggregation = c("weighted_mean", "weighted_sum", "sum")
 ) {
+  aggregation <- match.arg(aggregation)
   variable <- rlang::ensym(variable)
   weight <- rlang::ensym(weight)
   start_units <- rlang::ensym(start_units)
   end_units <- rlang::ensym(end_units)
-  year <- rlang::ensym(year)
+  
+  year <- rlang::enquo(year)
+  year_missing <- rlang::quo_is_null(year)
+
+  group_vars <- if (year_missing) {
+    rlang::quos(!!end_units)
+  } else {
+    rlang::quos(!!year, !!end_units)
+  }
 
   one_sample <- function(df) {
-    df |>
+    sampled <- df |>
       dplyr::group_by(!!start_units) |>
       dplyr::slice_sample(n = 1) |>
-      dplyr::ungroup() |>
-      dplyr::summarise(
-        mean = weighted.mean(!!variable, !!weight, na.rm = TRUE),
-        .groups = "drop"
-      ) |>
-      dplyr::pull(mean)
+      dplyr::ungroup()
+    
+    values <- dplyr::pull(sampled, !!variable)
+    weights <- dplyr::pull(sampled, !!weight)
+
+    switch(
+      aggregation,
+      weighted_mean = stats::weighted.mean(
+        values,
+        weights,
+        na.rm = TRUE
+      ),
+      weighted_sum = sum(
+        values * weights,
+        na.rm = TRUE
+      ),
+      sum = sum(
+        values,
+        na.rm = TRUE
+      )
+    )
   }
 
   data |>
-    group_by(!!year, !!end_units) |>
+    group_by(!!!group_vars) |>
     dplyr::group_modify(\(df, ...) {
       tibble::tibble(
-        mean = replicate(n, one_sample(df))
+        value = replicate(n, one_sample(df))
       )
     }) |>
     dplyr::ungroup() |>
-    rename(!!end_units_name := end_units, sampled_mean = mean)
+    rename(!!end_units_name := end_units, sampled_value = value)
 }
