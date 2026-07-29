@@ -14,7 +14,8 @@ ec_upscale(
   end_units,
   year = NULL,
   end_units_name = "name",
-  n = 1000
+  n = 1000,
+  aggregation = c("weighted_mean", "weighted_sum", "sum")
 )
 ```
 
@@ -52,7 +53,8 @@ ec_upscale(
 
   Optional column identifying years or other temporal groups. If
   supplied, aggregation is performed separately for each combination of
-  `year` and `start_units`.
+  `year` and `end_units`. If omitted, all observations are pooled before
+  upscaling.
 
 - end_units_name:
 
@@ -63,6 +65,11 @@ ec_upscale(
 
   Integer. Number of Monte Carlo samples to draw for each aggregated
   unit. Defaults to `1000`.
+
+- aggregation:
+
+  Character. Type of aggregation method. One of `weighted_mean`,
+  `weighted_sum`, and `sum`. Defaults to `weighted_mean`.
 
 ## Value
 
@@ -77,10 +84,10 @@ unit, and optionally each year. The output contains:
 
   The name or identifier of the aggregated `newUnits` spatial unit.
 
-- sampled_mean:
+- sampled_value:
 
-  One Monte Carlo draw from the inferred distribution of the weighted
-  mean ecosystem condition indicator for the aggregated unit.
+  One Monte Carlo draw from the inferred distribution of the ecosystem
+  condition indicator for the aggregated unit.
 
 ## Details
 
@@ -96,22 +103,26 @@ and computes a weighted mean across those sampled values.
 
 The input `variable` is assumed to represent a distribution of plausible
 values for the true ecosystem condition indicator value of each
-`start_unit` unit. The resulting `sampled_mean` values therefore
-represent an inferential uncertainty distribution for the aggregated
-value at the `end_units` level, rather than a descriptive distribution
-of observed values. Point estimates and summary statistics, such as
-means, medians, credible intervals, or quantiles, should be computed
-from the returned distribution after aggregation.
+`start_unit` unit. The resulting `sampled_value` therefore represent an
+inferential uncertainty distribution for the aggregated value at the
+`end_units` level, rather than a descriptive distribution of observed
+values. Point estimates and summary statistics, such as means, medians,
+credible intervals, or quantiles, should be computed from the returned
+distribution after aggregation.
+
+The aggregation, or upscaling, can be done using weighted means,
+weighted sums, or plain sums.
 
 For each `start_units` group, the function performs the following steps
 `n` times:
 
 1.  Sample one value from each `start_units` group.
 
-2.  Compute the weighted mean of the sampled values using `weight`.
+2.  Compute the weighted mean or sum of the sampled values using
+    `weight`.
 
-3.  Store the resulting weighted mean as one draw from the aggregated
-    uncertainty distribution.
+3.  Store the resulting value (weighted mean, weighted sum, or sum) as
+    one draw from the aggregated uncertainty distribution.
 
 The function is designed for cases where uncertainty is represented as a
 distribution of possible true values for each start unit. The output
@@ -151,21 +162,21 @@ out <- ec_upscale(
  )
 out
 #> # A tibble: 10 × 3
-#>     year name    sampled_mean
-#>    <dbl> <chr>          <dbl>
-#>  1  2026 A and B        0.383
-#>  2  2026 A and B        0.601
-#>  3  2026 A and B        0.557
-#>  4  2026 A and B        0.590
-#>  5  2026 A and B        0.672
-#>  6  2026 A and B        0.519
-#>  7  2026 A and B        0.396
-#>  8  2026 A and B        0.656
-#>  9  2026 A and B        0.614
-#> 10  2026 A and B        0.571
+#>     year name    sampled_value
+#>    <dbl> <chr>           <dbl>
+#>  1  2026 A and B         0.383
+#>  2  2026 A and B         0.601
+#>  3  2026 A and B         0.557
+#>  4  2026 A and B         0.590
+#>  5  2026 A and B         0.672
+#>  6  2026 A and B         0.519
+#>  7  2026 A and B         0.396
+#>  8  2026 A and B         0.656
+#>  9  2026 A and B         0.614
+#> 10  2026 A and B         0.571
 
 out |>
-  summarise(mean = (mean(sampled_mean)))
+  summarise(mean = (mean(sampled_value)))
 #> # A tibble: 1 × 1
 #>    mean
 #>   <dbl>
