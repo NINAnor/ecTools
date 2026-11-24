@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ecTools</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +52,8 @@
 <span>  concave_exponent <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  truncation <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  power_exponent <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  quadratic_curvature <span class="op">=</span> <span class="fl">0</span></span>
+<span>  quadratic_curvature <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  circular_curvature <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -95,7 +96,7 @@ vector with the same length as <code>variable</code>.</p></dd>
 
 <dt id="arg-fun">fun<a class="anchor" aria-label="anchor" href="#arg-fun"></a></dt>
 <dd><p>Character. Transformation function applied after
-normalisation. One of <code>"linear"</code>, <code>"sigmoid"</code>, <code>"power"</code>,
+normalisation. One of <code>"linear"</code>, <code>"sigmoid"</code>, <code>"power"</code>, <code>"reflected power"</code>
 or <code>"quadratic"</code>. Defaults to <code>"linear"</code>.</p></dd>
 
 
@@ -129,6 +130,16 @@ Negative values produce convex transformations, positive
 values produce concave transformations, and 0 gives
 linear normalisation.</p></dd>
 
+
+<dt id="arg-circular-curvature">circular_curvature<a class="anchor" aria-label="anchor" href="#arg-circular-curvature"></a></dt>
+<dd><p>Numeric scalar between -1 and 1.
+Controls the curvature of the circular arc transformation
+when <code>fun = "circular"</code>. Negative values produce convex
+transformations, positive values produce concave
+transformations, and zero gives linear normalisation.
+Values of -1 and 1 produce quarter-circle transformations.
+Defaults to 0.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -151,6 +162,12 @@ available when <code>fun = "linear"</code>, because the non-linear transformatio
 otherwise produce <code>NaN</code> for negative extrapolated values.</p>
 <p>Two-sided normalisation with defined <code>x60</code> values is currently not supported.
 Exponential transformations are currently not supported when <code>x60</code> is used.</p>
+<p>The reflected power transformation is defined as
+<code>1 - (1 - z)^p</code>, where <code>z</code> is the linearly normalised
+variable and <code>p</code> is the power exponent.
+Exponents greater than 1 produce concave transformations,
+while exponents between 0 and 1 produce convex
+transformations.</p>
     </div>
 
     <div class="section level2">

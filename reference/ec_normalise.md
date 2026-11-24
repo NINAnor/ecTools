@@ -17,7 +17,8 @@ ec_normalise(
   concave_exponent = 2,
   truncation = TRUE,
   power_exponent = 1,
-  quadratic_curvature = 0
+  quadratic_curvature = 0,
+  circular_curvature = 0
 )
 ```
 
@@ -60,8 +61,8 @@ ec_normalise(
 - fun:
 
   Character. Transformation function applied after normalisation. One of
-  `"linear"`, `"sigmoid"`, `"power"`, or `"quadratic"`. Defaults to
-  `"linear"`.
+  `"linear"`, `"sigmoid"`, `"power"`, `"reflected power"` or
+  `"quadratic"`. Defaults to `"linear"`.
 
 - convex_exponent:
 
@@ -89,6 +90,14 @@ ec_normalise(
   Numeric scalar between -1 and 1. Negative values produce convex
   transformations, positive values produce concave transformations, and
   0 gives linear normalisation.
+
+- circular_curvature:
+
+  Numeric scalar between -1 and 1. Controls the curvature of the
+  circular arc transformation when `fun = "circular"`. Negative values
+  produce convex transformations, positive values produce concave
+  transformations, and zero gives linear normalisation. Values of -1 and
+  1 produce quarter-circle transformations. Defaults to 0.
 
 ## Value
 
@@ -118,6 +127,11 @@ extrapolated values.
 Two-sided normalisation with defined `x60` values is currently not
 supported. Exponential transformations are currently not supported when
 `x60` is used.
+
+The reflected power transformation is defined as `1 - (1 - z)^p`, where
+`z` is the linearly normalised variable and `p` is the power exponent.
+Exponents greater than 1 produce concave transformations, while
+exponents between 0 and 1 produce convex transformations.
 
 ## Examples
 
