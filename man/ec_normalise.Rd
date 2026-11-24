@@ -16,7 +16,8 @@ ec_normalise(
   concave_exponent = 2,
   truncation = TRUE,
   power_exponent = 1,
-  quadratic_curvature = 0
+  quadratic_curvature = 0,
+  circular_curvature = 0
 )
 }
 \arguments{
@@ -65,6 +66,14 @@ transformations. A value of 1 gives linear normalisation.}
 Negative values produce convex transformations, positive
 values produce concave transformations, and 0 gives
 linear normalisation.}
+
+\item{circular_curvature}{Numeric scalar between -1 and 1.
+Controls the curvature of the circular arc transformation
+when \code{fun = "circular"}. Negative values produce convex
+transformations, positive values produce concave
+transformations, and zero gives linear normalisation.
+Values of -1 and 1 produce quarter-circle transformations.
+Defaults to 0.}
 }
 \value{
 A numeric vector with values between 0 and 1.

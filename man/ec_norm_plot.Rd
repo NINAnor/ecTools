@@ -94,6 +94,17 @@ ind <- ec_normalise(
 )
 
 ec_norm_plot(x, ind)
+
+# Circular arc transformation
+ind <- ec_normalise(
+  variable = x,
+  x0 = 100,
+  x100 = 900,
+  fun = "circular",
+  circular_curvature = .9
+)
+
+ec_norm_plot(x, ind)
 }
 \seealso{
 \code{\link[=ec_normalise]{ec_normalise()}} for calculating normalised indicator values.

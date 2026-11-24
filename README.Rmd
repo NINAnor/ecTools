@@ -43,7 +43,7 @@ ecTools is part of **ecVerse - Ecosystem condition workflows for science and pol
 ## ecTools 0.0.0.9004
 ### New features
 
-* Added reflected power transformation option
+* Added reflected power and circular transformation options.
 
 ## ecTools 0.0.0.9004
 
