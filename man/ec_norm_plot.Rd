@@ -74,6 +74,16 @@ ind <- ec_normalise(
 
 ec_norm_plot(x, ind)
 
+# Reflected power transformation
+ind <- ec_normalise(
+  variable = x,
+  x0 = 100,
+  x100 = 900,
+  fun = "reflected power",
+  power_exponent = 3
+)
+ec_norm_plot(x, ind)
+
 # Quadratic transformation
 ind <- ec_normalise(
   variable = x,
@@ -81,6 +91,17 @@ ind <- ec_normalise(
   x100 = 900,
   fun = "quadratic",
   quadratic_curvature = 0.8
+)
+
+ec_norm_plot(x, ind)
+
+# Circular arc transformation
+ind <- ec_normalise(
+  variable = x,
+  x0 = 100,
+  x100 = 900,
+  fun = "circular",
+  circular_curvature = .9
 )
 
 ec_norm_plot(x, ind)

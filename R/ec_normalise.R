@@ -22,7 +22,7 @@
 #'   to indicator value 0 in two-sided normalisation. Can be a single value or a
 #'   vector with the same length as `variable`.
 #' @param fun Character. Transformation function applied after
-#'   normalisation. One of `"linear"`, `"sigmoid"`, `"power"`,
+#'   normalisation. One of `"linear"`, `"sigmoid"`, `"power"`, `"reflected power"`
 #'   or `"quadratic"`. Defaults to `"linear"`.
 #' @param power_exponent Positive numeric scalar. Exponent used
 #'   when `fun = "power"`. Values below 1 produce concave
@@ -32,6 +32,13 @@
 #'   Negative values produce convex transformations, positive
 #'   values produce concave transformations, and 0 gives
 #'   linear normalisation.
+#' @param circular_curvature Numeric scalar between -1 and 1.
+#'   Controls the curvature of the circular arc transformation
+#'   when `fun = "circular"`. Negative values produce convex
+#'   transformations, positive values produce concave
+#'   transformations, and zero gives linear normalisation.
+#'   Values of -1 and 1 produce quarter-circle transformations.
+#'   Defaults to 0.
 #' @param convex_exponent `r lifecycle::badge("deprecated")`
 #'   Use `power_exponent` instead.
 #' @param concave_exponent `r lifecycle::badge("deprecated")`
@@ -56,6 +63,13 @@
 #'
 #' Two-sided normalisation with defined `x60` values is currently not supported.
 #' Exponential transformations are currently not supported when `x60` is used.
+#' 
+#' The reflected power transformation is defined as
+#' `1 - (1 - z)^p`, where `z` is the linearly normalised
+#' variable and `p` is the power exponent.
+#' Exponents greater than 1 produce concave transformations,
+#' while exponents between 0 and 1 produce convex
+#' transformations.
 #'
 #' @return A numeric vector with values between 0 and 1.
 #'
@@ -139,7 +153,8 @@ ec_normalise <- function(
   concave_exponent = 2,  #deprecated
   truncation = TRUE,
   power_exponent = 1,
-  quadratic_curvature = 0
+  quadratic_curvature = 0,
+  circular_curvature = 0
 ) {
   if (fun == "exponential convex") {
 
@@ -203,14 +218,14 @@ if (fun == "exponential concave") {
 
   if (
     !is_empty(x60) &
-      fun %in% c("power", "quadratic")
+      fun %in% c("power", "reflected power", "quadratic", "circular")
   ) {
     stop(
-      "x60 anchoring is not supported with power functions or quadratic transformations"
+      "x60 anchoring is not supported with power, reflected power, circular or quadratic transformations"
     )
   }
 
-  if (fun == "power") {
+  if (fun %in% c("power", "reflected power")) {
     if(
       !is.numeric(power_exponent) ||
       length(power_exponent) != 1L ||
@@ -230,6 +245,18 @@ if (fun == "exponential concave") {
       quadratic_curvature > 1
     ) {
       stop("`quadratic_curvature` must be a number between -1 and 1.")
+    }
+  }
+
+  if (fun == "circular") {
+    if (
+      !is.numeric(circular_curvature) ||
+      length(circular_curvature) != 1L ||
+      !is.finite(circular_curvature) ||
+      circular_curvature < -1 ||
+      circular_curvature > 1
+    ) {
+      stop("`circular_curvature` must be a number between -1 and 1.")
     }
   }
   n <- length(variable)
@@ -295,7 +322,7 @@ if (fun == "exponential concave") {
   "%!in%" <- Negate("%in%")
   if (
     fun %!in%
-      c("linear", "sigmoid", "power", "quadratic")
+      c("linear", "sigmoid", "power", "reflected power", "circular", "quadratic")
   ) {
     stop("Unknown transformation function")
   }
@@ -367,6 +394,29 @@ if (fun == "exponential concave") {
   indicator <- indicator +
     quadratic_curvature * indicator * (1 - indicator)
   }
-
+  if (fun == "reflected power") {
+    indicator <- 1 - (1 - indicator)^power_exponent
+  }
+  if (fun == "circular") {
+    k <- circular_curvature
+    if (k != 0) {
+      b <- (1 - k^2) / (2 * abs(k))
+      circular_arc <- function(z) {
+        if (abs(k) == 1) {
+          return(sqrt(2 * z - z^2))
+        }
+      if (abs(k) < sqrt(.Machine$double.eps)) {
+        return(z)
+      }
+  a <- 2 * (b + 1) * z - z^2
+  a / (sqrt(b^2 + a) + b)
+}
+    if (k > 0) {
+      indicator <- circular_arc(indicator)
+    } else {
+      indicator <- 1 - circular_arc(1 - indicator)
+     }
+    }
+  }
   return(indicator)
 }

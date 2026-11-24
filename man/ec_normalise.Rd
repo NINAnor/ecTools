@@ -16,7 +16,8 @@ ec_normalise(
   concave_exponent = 2,
   truncation = TRUE,
   power_exponent = 1,
-  quadratic_curvature = 0
+  quadratic_curvature = 0,
+  circular_curvature = 0
 )
 }
 \arguments{
@@ -42,7 +43,7 @@ to indicator value 0 in two-sided normalisation. Can be a single value or a
 vector with the same length as \code{variable}.}
 
 \item{fun}{Character. Transformation function applied after
-normalisation. One of \code{"linear"}, \code{"sigmoid"}, \code{"power"},
+normalisation. One of \code{"linear"}, \code{"sigmoid"}, \code{"power"}, \code{"reflected power"}
 or \code{"quadratic"}. Defaults to \code{"linear"}.}
 
 \item{convex_exponent}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
@@ -65,6 +66,14 @@ transformations. A value of 1 gives linear normalisation.}
 Negative values produce convex transformations, positive
 values produce concave transformations, and 0 gives
 linear normalisation.}
+
+\item{circular_curvature}{Numeric scalar between -1 and 1.
+Controls the curvature of the circular arc transformation
+when \code{fun = "circular"}. Negative values produce convex
+transformations, positive values produce concave
+transformations, and zero gives linear normalisation.
+Values of -1 and 1 produce quarter-circle transformations.
+Defaults to 0.}
 }
 \value{
 A numeric vector with values between 0 and 1.
@@ -91,6 +100,13 @@ otherwise produce \code{NaN} for negative extrapolated values.
 
 Two-sided normalisation with defined \code{x60} values is currently not supported.
 Exponential transformations are currently not supported when \code{x60} is used.
+
+The reflected power transformation is defined as
+\code{1 - (1 - z)^p}, where \code{z} is the linearly normalised
+variable and \code{p} is the power exponent.
+Exponents greater than 1 produce concave transformations,
+while exponents between 0 and 1 produce convex
+transformations.
 }
 \examples{
 x <- c(0, 2, 4, 6, 8, 10)
