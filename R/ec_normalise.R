@@ -22,7 +22,7 @@
 #'   to indicator value 0 in two-sided normalisation. Can be a single value or a
 #'   vector with the same length as `variable`.
 #' @param fun Character. Transformation function applied after
-#'   normalisation. One of `"linear"`, `"sigmoid"`, `"power"`,
+#'   normalisation. One of `"linear"`, `"sigmoid"`, `"power"`, `"reflected power"`
 #'   or `"quadratic"`. Defaults to `"linear"`.
 #' @param power_exponent Positive numeric scalar. Exponent used
 #'   when `fun = "power"`. Values below 1 produce concave
@@ -56,6 +56,13 @@
 #'
 #' Two-sided normalisation with defined `x60` values is currently not supported.
 #' Exponential transformations are currently not supported when `x60` is used.
+#' 
+#' The reflected power transformation is defined as
+#' `1 - (1 - z)^p`, where `z` is the linearly normalised
+#' variable and `p` is the power exponent.
+#' Exponents greater than 1 produce concave transformations,
+#' while exponents between 0 and 1 produce convex
+#' transformations.
 #'
 #' @return A numeric vector with values between 0 and 1.
 #'
@@ -203,14 +210,14 @@ if (fun == "exponential concave") {
 
   if (
     !is_empty(x60) &
-      fun %in% c("power", "quadratic")
+      fun %in% c("power", "reflected power", "quadratic")
   ) {
     stop(
-      "x60 anchoring is not supported with power functions or quadratic transformations"
+      "x60 anchoring is not supported with power, reflected power, or quadratic transformations"
     )
   }
 
-  if (fun == "power") {
+  if (fun %in% c("power", "reflected power")) {
     if(
       !is.numeric(power_exponent) ||
       length(power_exponent) != 1L ||
@@ -295,7 +302,7 @@ if (fun == "exponential concave") {
   "%!in%" <- Negate("%in%")
   if (
     fun %!in%
-      c("linear", "sigmoid", "power", "quadratic")
+      c("linear", "sigmoid", "power", "reflected power", "quadratic")
   ) {
     stop("Unknown transformation function")
   }
@@ -366,6 +373,9 @@ if (fun == "exponential concave") {
   if (fun == "quadratic") {
   indicator <- indicator +
     quadratic_curvature * indicator * (1 - indicator)
+  }
+  if (fun == "reflected power") {
+    indicator <- 1 - (1 - indicator)^power_exponent
   }
 
   return(indicator)

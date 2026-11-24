@@ -42,7 +42,7 @@ to indicator value 0 in two-sided normalisation. Can be a single value or a
 vector with the same length as \code{variable}.}
 
 \item{fun}{Character. Transformation function applied after
-normalisation. One of \code{"linear"}, \code{"sigmoid"}, \code{"power"},
+normalisation. One of \code{"linear"}, \code{"sigmoid"}, \code{"power"}, \code{"reflected power"}
 or \code{"quadratic"}. Defaults to \code{"linear"}.}
 
 \item{convex_exponent}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
@@ -91,6 +91,13 @@ otherwise produce \code{NaN} for negative extrapolated values.
 
 Two-sided normalisation with defined \code{x60} values is currently not supported.
 Exponential transformations are currently not supported when \code{x60} is used.
+
+The reflected power transformation is defined as
+\code{1 - (1 - z)^p}, where \code{z} is the linearly normalised
+variable and \code{p} is the power exponent.
+Exponents greater than 1 produce concave transformations,
+while exponents between 0 and 1 produce convex
+transformations.
 }
 \examples{
 x <- c(0, 2, 4, 6, 8, 10)

@@ -67,6 +67,16 @@
 #'
 #' ec_norm_plot(x, ind)
 #'
+#' # Reflected power transformation
+#' ind <- ec_normalise(
+#'   variable = x,
+#'   x0 = 100,
+#'   x100 = 900,
+#'   fun = "reflected power",
+#'   power_exponent = 3
+#' )
+#' ec_norm_plot(x, ind)
+#' 
 #' # Quadratic transformation
 #' ind <- ec_normalise(
 #'   variable = x,

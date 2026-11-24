@@ -41,6 +41,11 @@ ecTools is part of **ecVerse - Ecosystem condition workflows for science and pol
 ![](man/figures/logo.png){width=139 height=139} [![](man/figures/ecRxiv_hex.png){width=139 height=139}](https://ecRxiv.com) 
 
 ## ecTools 0.0.0.9004
+### New features
+
+* Added reflected power transformation option
+
+## ecTools 0.0.0.9004
 
 ### New features
 
