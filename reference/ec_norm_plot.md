@@ -18,7 +18,7 @@ ec_norm_plot(variable, indicator, lan = "english")
 - indicator:
 
   Numeric vector of normalised indicator values, typically produced by
-  `ec_normalise_dev()`.
+  [`ec_normalise()`](https://ninanor.github.io/ecTools/reference/ec_normalise.md).
 
 - lan:
 
@@ -32,7 +32,8 @@ A `ggplot2` object.
 ## Details
 
 Creates a scatter plot comparing raw variable values and corresponding
-normalised indicator values produced by `ec_normalise_dev()`.
+normalised indicator values produced by
+[`ec_normalise()`](https://ninanor.github.io/ecTools/reference/ec_normalise.md).
 
 The plot is intended as a simple diagnostic and visualisation tool for
 evaluating ecological normalisation functions.
@@ -42,6 +43,11 @@ red-to-green colour gradient.
 
 The function returns a `ggplot2` object and can therefore be further
 modified using standard `ggplot2` syntax.
+
+## See also
+
+[`ec_normalise()`](https://ninanor.github.io/ecTools/reference/ec_normalise.md)
+for calculating normalised indicator values.
 
 ## Examples
 
@@ -74,4 +80,28 @@ ec_norm_plot(
   variable = x,
   indicator = ind
 )
+
+
+# Power transformation
+ind <- ec_normalise(
+  variable = x,
+  x0 = 100,
+  x100 = 900,
+  fun = "power",
+  power_exponent = 0.5
+)
+
+ec_norm_plot(x, ind)
+
+
+# Quadratic transformation
+ind <- ec_normalise(
+  variable = x,
+  x0 = 100,
+  x100 = 900,
+  fun = "quadratic",
+  quadratic_curvature = 0.8
+)
+
+ec_norm_plot(x, ind)
 ```

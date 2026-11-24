@@ -15,7 +15,9 @@ ec_normalise(
   fun = "linear",
   convex_exponent = 0.5,
   concave_exponent = 2,
-  truncation = TRUE
+  truncation = TRUE,
+  power_exponent = 1,
+  quadratic_curvature = 0
 )
 ```
 
@@ -58,18 +60,16 @@ ec_normalise(
 - fun:
 
   Character. Transformation function applied after normalisation. One of
-  `"linear"` (no transformation), `"sigmoid"`, `"exponential convex"`,
-  or `"exponential concave"`. Defaults to `"linear"`.
+  `"linear"`, `"sigmoid"`, `"power"`, or `"quadratic"`. Defaults to
+  `"linear"`.
 
 - convex_exponent:
 
-  Numeric. Exponent used when `fun = "exponential convex"`. Defaults to
-  0.5.
+  **\[deprecated\]** Use `power_exponent` instead.
 
 - concave_exponent:
 
-  Numeric. Exponent used when `fun = "exponential concave"`. Defaults to
-  2.
+  **\[deprecated\]** Use `power_exponent` instead.
 
 - truncation:
 
@@ -77,6 +77,18 @@ ec_normalise(
   interval `[0, 1]`. If `FALSE`, values outside the reference range are
   linearly extrapolated and may fall below 0 or above 1. Disabling
   truncation is only supported when `fun = "linear"`.
+
+- power_exponent:
+
+  Positive numeric scalar. Exponent used when `fun = "power"`. Values
+  below 1 produce concave transformations, and values above 1 produce
+  convex transformations. A value of 1 gives linear normalisation.
+
+- quadratic_curvature:
+
+  Numeric scalar between -1 and 1. Negative values produce convex
+  transformations, positive values produce concave transformations, and
+  0 gives linear normalisation.
 
 ## Value
 
@@ -156,4 +168,31 @@ ec_normalise(
   truncation = FALSE
 )
 #> [1] -0.2  0.0  0.5  1.0  1.2
+# Concave power transformation
+ec_normalise(
+  variable = x,
+  x0 = 0,
+  x100 = 10,
+  fun = "power",
+  power_exponent = 0.5
+)
+#> [1] 0.0000000 0.4472136 0.6324555 0.7745967 0.8944272 1.0000000
+# Convex quadratic transformation
+ec_normalise(
+  variable = x,
+  x0 = 0,
+  x100 = 10,
+  fun = "quadratic",
+  quadratic_curvature = -0.8
+)
+#> [1] 0.000 0.072 0.208 0.408 0.672 1.000
+
+# Sigmoid transformation
+ec_normalise(
+  variable = x,
+  x0 = 0,
+  x100 = 10,
+  fun = "sigmoid"
+)
+#> [1] 0.00000000 0.08614116 0.39977630 0.75710048 0.94926662 1.00000000
 ```
