@@ -3,17 +3,17 @@
 #' Plot normalised ecological indicator values against the raw variable values
 #'
 #' Creates a scatter plot comparing raw variable values and corresponding
-#' normalised indicator values produced by `ec_normalise_dev()`.
+#' normalised indicator values produced by [ec_normalise()].
 #'
 #' The plot is intended as a simple diagnostic and visualisation tool for
 #' evaluating ecological normalisation functions.
 #'
 #' @param variable Numeric vector of raw variable values.
 #' @param indicator Numeric vector of normalised indicator values, typically
-#'   produced by `ec_normalise_dev()`.
+#'   produced by [ec_normalise()].
 #' @param lan Character. Plot language. One of `"english"` or `"norsk"`.
 #'   Defaults to `"english"`.
-#'
+#' @seealso [ec_normalise()] for calculating normalised indicator values.
 #' @details
 #' Points are coloured according to the indicator value using a red-to-green
 #' colour gradient.
@@ -55,8 +55,35 @@
 #'   variable = x,
 #'   indicator = ind
 #' )
-
+#'
+#' # Power transformation
+#' ind <- ec_normalise(
+#'   variable = x,
+#'   x0 = 100,
+#'   x100 = 900,
+#'   fun = "power",
+#'   power_exponent = 0.5
+#' )
+#'
+#' ec_norm_plot(x, ind)
+#'
+#' # Quadratic transformation
+#' ind <- ec_normalise(
+#'   variable = x,
+#'   x0 = 100,
+#'   x100 = 900,
+#'   fun = "quadratic",
+#'   quadratic_curvature = 0.8
+#' )
+#'
+#' ec_norm_plot(x, ind)
 ec_norm_plot <- function(variable, indicator, lan = "english") {
+  stopifnot(
+    is.numeric(variable),
+    is.numeric(indicator),
+    length(variable) == length(indicator)
+  )
+  lan <- match.arg(lan, c("english", "norsk"))
   low <- "red"
   high <- "green"
   mySize <- 8
@@ -64,17 +91,13 @@ ec_norm_plot <- function(variable, indicator, lan = "english") {
   myShape <- 21
   if (lan == "english") {
     myYlab <- "Indicator values"
-  }
-  if (lan == "norsk") {
-    myYlab <- "Indikatorverdier"
-  }
-  if (lan == "english") {
     myXlab <- "Variable values"
   }
   if (lan == "norsk") {
+    myYlab <- "Indikatorverdier"
     myXlab <- "Variabelverdier"
   }
-
+  
   dat <- tibble(indicator, variable)
 
   ggOut <- ggplot(
@@ -89,7 +112,12 @@ ec_norm_plot <- function(variable, indicator, lan = "english") {
     ) +
     ylab(myYlab) +
     xlab(myXlab) +
-    scale_fill_gradient(low = low, high = high) +
+    scale_fill_gradient(
+      low = low,
+      high = high,
+      limits = c(0, 1),
+      oob = scales::squish
+    ) +
     scale_x_continuous(expand = expansion(mult = .2)) +
     scale_y_continuous(
       breaks = seq(0, 1, by = .2),

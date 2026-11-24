@@ -10,7 +10,7 @@ ec_norm_plot(variable, indicator, lan = "english")
 \item{variable}{Numeric vector of raw variable values.}
 
 \item{indicator}{Numeric vector of normalised indicator values, typically
-produced by \code{ec_normalise_dev()}.}
+produced by \code{\link[=ec_normalise]{ec_normalise()}}.}
 
 \item{lan}{Character. Plot language. One of \code{"english"} or \code{"norsk"}.
 Defaults to \code{"english"}.}
@@ -23,7 +23,7 @@ Plot normalised ecological indicator values against the raw variable values
 }
 \details{
 Creates a scatter plot comparing raw variable values and corresponding
-normalised indicator values produced by \code{ec_normalise_dev()}.
+normalised indicator values produced by \code{\link[=ec_normalise]{ec_normalise()}}.
 
 The plot is intended as a simple diagnostic and visualisation tool for
 evaluating ecological normalisation functions.
@@ -62,4 +62,29 @@ ec_norm_plot(
   variable = x,
   indicator = ind
 )
+
+# Power transformation
+ind <- ec_normalise(
+  variable = x,
+  x0 = 100,
+  x100 = 900,
+  fun = "power",
+  power_exponent = 0.5
+)
+
+ec_norm_plot(x, ind)
+
+# Quadratic transformation
+ind <- ec_normalise(
+  variable = x,
+  x0 = 100,
+  x100 = 900,
+  fun = "quadratic",
+  quadratic_curvature = 0.8
+)
+
+ec_norm_plot(x, ind)
+}
+\seealso{
+\code{\link[=ec_normalise]{ec_normalise()}} for calculating normalised indicator values.
 }

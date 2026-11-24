@@ -14,7 +14,9 @@ ec_normalise(
   fun = "linear",
   convex_exponent = 0.5,
   concave_exponent = 2,
-  truncation = TRUE
+  truncation = TRUE,
+  power_exponent = 1,
+  quadratic_curvature = 0
 )
 }
 \arguments{
@@ -39,20 +41,30 @@ for two-sided normalisation with an upper x60 reference value.}
 to indicator value 0 in two-sided normalisation. Can be a single value or a
 vector with the same length as \code{variable}.}
 
-\item{fun}{Character. Transformation function applied after normalisation.
-One of \code{"linear"} (no transformation), \code{"sigmoid"}, \code{"exponential convex"}, or
-\code{"exponential concave"}. Defaults to \code{"linear"}.}
+\item{fun}{Character. Transformation function applied after
+normalisation. One of \code{"linear"}, \code{"sigmoid"}, \code{"power"},
+or \code{"quadratic"}. Defaults to \code{"linear"}.}
 
-\item{convex_exponent}{Numeric. Exponent used when
-\code{fun = "exponential convex"}. Defaults to 0.5.}
+\item{convex_exponent}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use \code{power_exponent} instead.}
 
-\item{concave_exponent}{Numeric. Exponent used when
-\code{fun = "exponential concave"}. Defaults to 2.}
+\item{concave_exponent}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Use \code{power_exponent} instead.}
 
 \item{truncation}{Logical. If \code{TRUE} (the default), normalised values are
 clamped to the interval \verb{[0, 1]}. If \code{FALSE}, values outside the reference
 range are linearly extrapolated and may fall below 0 or above 1. Disabling
 truncation is only supported when \code{fun = "linear"}.}
+
+\item{power_exponent}{Positive numeric scalar. Exponent used
+when \code{fun = "power"}. Values below 1 produce concave
+transformations, and values above 1 produce convex
+transformations. A value of 1 gives linear normalisation.}
+
+\item{quadratic_curvature}{Numeric scalar between -1 and 1.
+Negative values produce convex transformations, positive
+values produce concave transformations, and 0 gives
+linear normalisation.}
 }
 \value{
 A numeric vector with values between 0 and 1.
@@ -120,5 +132,29 @@ ec_normalise(
   x0 = 0,
   x100 = 10,
   truncation = FALSE
+)
+# Concave power transformation
+ec_normalise(
+  variable = x,
+  x0 = 0,
+  x100 = 10,
+  fun = "power",
+  power_exponent = 0.5
+)
+# Convex quadratic transformation
+ec_normalise(
+  variable = x,
+  x0 = 0,
+  x100 = 10,
+  fun = "quadratic",
+  quadratic_curvature = -0.8
+)
+
+# Sigmoid transformation
+ec_normalise(
+  variable = x,
+  x0 = 0,
+  x100 = 10,
+  fun = "sigmoid"
 )
 }

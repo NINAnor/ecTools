@@ -21,13 +21,21 @@
 #' @param x0h Numeric or `NULL`. Optional high-end reference value corresponding
 #'   to indicator value 0 in two-sided normalisation. Can be a single value or a
 #'   vector with the same length as `variable`.
-#' @param fun Character. Transformation function applied after normalisation.
-#'   One of `"linear"` (no transformation), `"sigmoid"`, `"exponential convex"`, or
-#'   `"exponential concave"`. Defaults to `"linear"`.
-#' @param convex_exponent Numeric. Exponent used when
-#'   `fun = "exponential convex"`. Defaults to 0.5.
-#' @param concave_exponent Numeric. Exponent used when
-#'   `fun = "exponential concave"`. Defaults to 2.
+#' @param fun Character. Transformation function applied after
+#'   normalisation. One of `"linear"`, `"sigmoid"`, `"power"`,
+#'   or `"quadratic"`. Defaults to `"linear"`.
+#' @param power_exponent Positive numeric scalar. Exponent used
+#'   when `fun = "power"`. Values below 1 produce concave
+#'   transformations, and values above 1 produce convex
+#'   transformations. A value of 1 gives linear normalisation.
+#' @param quadratic_curvature Numeric scalar between -1 and 1.
+#'   Negative values produce convex transformations, positive
+#'   values produce concave transformations, and 0 gives
+#'   linear normalisation.
+#' @param convex_exponent `r lifecycle::badge("deprecated")`
+#'   Use `power_exponent` instead.
+#' @param concave_exponent `r lifecycle::badge("deprecated")`
+#'   Use `power_exponent` instead.
 #' @param truncation Logical. If `TRUE` (the default), normalised values are
 #'   clamped to the interval `[0, 1]`. If `FALSE`, values outside the reference
 #'   range are linearly extrapolated and may fall below 0 or above 1. Disabling
@@ -95,6 +103,30 @@
 #'   x100 = 10,
 #'   truncation = FALSE
 #' )
+#' # Concave power transformation
+#' ec_normalise(
+#'   variable = x,
+#'   x0 = 0,
+#'   x100 = 10,
+#'   fun = "power",
+#'   power_exponent = 0.5
+#' )
+#' # Convex quadratic transformation
+#' ec_normalise(
+#'   variable = x,
+#'   x0 = 0,
+#'   x100 = 10,
+#'   fun = "quadratic",
+#'   quadratic_curvature = -0.8
+#' )
+#'
+#' # Sigmoid transformation
+#' ec_normalise(
+#'   variable = x,
+#'   x0 = 0,
+#'   x100 = 10,
+#'   fun = "sigmoid"
+#' )
 ec_normalise <- function(
   variable = NULL,
   x0 = 0,
@@ -103,10 +135,44 @@ ec_normalise <- function(
   x60h = NULL,
   x0h = NULL,
   fun = "linear",
-  convex_exponent = 0.5,
-  concave_exponent = 2,
-  truncation = TRUE
+  convex_exponent = 0.5, #deprecated
+  concave_exponent = 2,  #deprecated
+  truncation = TRUE,
+  power_exponent = 1,
+  quadratic_curvature = 0
 ) {
+  if (fun == "exponential convex") {
+
+  lifecycle::deprecate_warn(
+    when = "0.0.0.9004",
+    what = I('ec_normalise(fun = "exponential convex")'),
+    with = I('ec_normalise(fun = "power")'),
+    details = paste0(
+      "Use power_exponent = ", convex_exponent,
+      " to reproduce the previous behaviour."
+    )
+  )
+
+  fun <- "power"
+  power_exponent <- convex_exponent
+}
+
+if (fun == "exponential concave") {
+
+  lifecycle::deprecate_warn(
+    when = "0.0.0.9004",
+    what = I('ec_normalise(fun = "exponential concave")'),
+    with = I('ec_normalise(fun = "power")'),
+    details = paste0(
+      "Use power_exponent = ", concave_exponent,
+      " to reproduce the previous behaviour."
+    )
+  )
+
+  fun <- "power"
+  power_exponent <- concave_exponent
+}
+  
   if (!is_empty(x60) & !is_empty(x0h)) {
     stop(
       "Two-sided normalisation with defined x60 values are not yet supported."
@@ -137,13 +203,35 @@ ec_normalise <- function(
 
   if (
     !is_empty(x60) &
-      fun %in% c("exponential convex", "exponential concave")
+      fun %in% c("power", "quadratic")
   ) {
     stop(
-      "x60 anchoring is not supported with exponential a transformation function"
+      "x60 anchoring is not supported with power functions or quadratic transformations"
     )
   }
 
+  if (fun == "power") {
+    if(
+      !is.numeric(power_exponent) ||
+      length(power_exponent) != 1L ||
+      !is.finite(power_exponent) ||
+      power_exponent <= 0
+    ) {
+      stop("`power_exponent` must be a number greater then zero")
+    }
+  }
+
+  if (fun == "quadratic") {
+    if (
+      !is.numeric(quadratic_curvature) ||
+      length(quadratic_curvature) != 1L ||
+      !is.finite(quadratic_curvature) ||
+      quadratic_curvature < -1 ||
+      quadratic_curvature > 1
+    ) {
+      stop("`quadratic_curvature` must be a number between -1 and 1.")
+    }
+  }
   n <- length(variable)
 
   expand_to_n <- function(x, n, name) {
@@ -207,7 +295,7 @@ ec_normalise <- function(
   "%!in%" <- Negate("%in%")
   if (
     fun %!in%
-      c("linear", "sigmoid", "exponential convex", "exponential concave")
+      c("linear", "sigmoid", "power", "quadratic")
   ) {
     stop("Unknown transformation function")
   }
@@ -272,11 +360,12 @@ ec_normalise <- function(
     indicator <- 100.68 * (1 - exp(-5 * indicator^2.5)) / 100
     indicator <- pmin(pmax(indicator, 0), 1)
   }
-  if (fun == "exponential convex") {
-    indicator <- indicator^convex_exponent
+  if (fun == "power") {
+    indicator <- indicator^power_exponent
   }
-  if (fun == "exponential concave") {
-    indicator <- indicator^concave_exponent
+  if (fun == "quadratic") {
+  indicator <- indicator +
+    quadratic_curvature * indicator * (1 - indicator)
   }
 
   return(indicator)
