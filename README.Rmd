@@ -39,3 +39,22 @@ devtools::install_github("NINAnor/ecTools")
 ecTools is part of **ecVerse - Ecosystem condition workflows for science and policy**
 
 ![](man/figures/logo.png){width=139 height=139} [![](man/figures/ecRxiv_hex.png){width=139 height=139}](https://ecRxiv.com) 
+
+## ecTools 0.0.0.9004
+
+### New features
+
+* Added power transformations (`fun = "power"`) with a
+  configurable exponent.
+* Added quadratic transformations (`fun = "quadratic"`)
+  with configurable curvature.
+
+### Deprecations
+
+* `fun = "exponential convex"` and
+  `fun = "exponential concave"` are deprecated.
+  These transformations were mathematically power functions
+  rather than exponential functions.
+* Use `fun = "power"` and `power_exponent` instead.
+* Existing calls retain their original numerical behaviour
+  but now issue a deprecation warning.
